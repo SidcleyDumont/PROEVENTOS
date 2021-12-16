@@ -4,50 +4,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PROEVENTOS.API.Data;
 using PROEVENTOS.API.Models;
 
 namespace PROEVENTOS.API.Controllers
 {
 
-[ApiController]
-[Route("api/controller")]
-public class EventoController : ControllerBase
-   {
-        public IEnumerable<Evento> _evento = new Evento[] {
-                new Evento(){
-                    EventoId = 1,
-                    Tema = "Angular 11 e .Net 5",
-                    Local = "Mamanguape",
-                    Lote = "1º Lote",
-                    QtdPessoas = 400,
-                    DataEvento = DateTime.Now.AddDays(2).ToString("dd/MM/yyyy"),
-                    ImagemURL = "jpg",
-                    Nome = "Sidcley"
-                },
-                new Evento(){
-                    EventoId = 2,
-                    Tema = "Angular 11",
-                    Local = "João Pessoa",
-                    Lote = "2º Lote",
-                    QtdPessoas = 40,
-                    DataEvento = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy"),
-                    ImagemURL = "jpg",
-                    Nome = "Sidcley Joao"
-                }
-            };
-        public EventoController()
-        { 
+    [ApiController]
+    [Route("api/controller")]
+    public class EventoController : ControllerBase
+    {
+
+        private readonly DataContext _context;
+        public EventoController(DataContext context)
+        {
+            _context = context;
         }
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
-            return _evento;
+            return _context.Eventos;
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<Evento> GetById(int id)
+        public Evento GetById(int id)
         {
-            return _evento.Where(evento=>evento.EventoId == id);
+            return _context.Eventos.FirstOrDefault(
+                evento => evento.EventoId == id
+                );
         }
 
         [HttpPost]
@@ -61,6 +45,6 @@ public class EventoController : ControllerBase
         {
             return $"Exemplo de Put com id = {id}";
         }
-        
+
     }
 };
